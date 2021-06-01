@@ -1,6 +1,6 @@
-# *XXX_ProjectTitle*
+# *Pierre's Sweet and Savory Treats*
 
-#### *XXX_ProjectTitle, ProjectDate*
+#### *Pierre's Sweet and Savory Treats, ProjectDate*
 
 #### By **Chris Ramer**
 
