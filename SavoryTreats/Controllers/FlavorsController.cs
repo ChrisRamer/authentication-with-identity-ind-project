@@ -77,5 +77,26 @@ namespace SavoryTreats.Controllers
 			_db.SaveChanges();
 			return RedirectToAction("Index");
 		}
+
+		public ActionResult AddTreat(int id)
+		{
+			Flavor thisFlavor = GetFlavorFromId(id);
+			ViewBag.TreatId = new SelectList(_db.Treats, "TreatId", "Name");
+			return View(thisFlavor);
+		}
+
+		[HttpPost]
+		public ActionResult AddTreat(Flavor flavor, int treatId)
+		{
+			bool duplicate = _db.FlavorTreats.Any(join => join.FlavorId == flavor.FlavorId && join.TreatId == treatId);
+
+			if (treatId != 0 && !duplicate)
+			{
+				_db.FlavorTreats.Add(new FlavorTreat() { FlavorId = flavor.FlavorId, TreatId = treatId });
+			}
+
+			_db.SaveChanges();
+			return RedirectToAction("Details", new { id = flavor.FlavorId });
+		}
 	}
 }
