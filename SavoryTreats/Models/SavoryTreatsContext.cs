@@ -4,8 +4,9 @@ namespace SavoryTreats.Models
 {
 	public class SavoryTreatsContext : DbContext
 	{
-		//public virtual DbSet<SavoryTreats> XXX_Model1Name { get; set; }
-		//public virtual DbSet<SavoryTreats> XXX_Model2Name { get; set; }
+		public virtual DbSet<Flavor> Flavors { get; set; }
+		public virtual DbSet<Treat> Treats { get; set; }
+		public virtual DbSet<FlavorTreat> FlavorTreats { get; set; }
 
 		public SavoryTreatsContext(DbContextOptions options) : base(options) { }
 
