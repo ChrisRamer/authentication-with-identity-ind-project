@@ -62,5 +62,20 @@ namespace SavoryTreats.Controllers
 			_db.SaveChanges();
 			return RedirectToAction("Details", new { id = flavor.FlavorId });
 		}
+
+		public ActionResult Delete(int id)
+		{
+			Flavor thisFlavor = GetFlavorFromId(id);
+			return View(thisFlavor);
+		}
+
+		[HttpPost, ActionName("Delete")]
+		public ActionResult DeleteConfirmed(int id)
+		{
+			Flavor thisFlavor = GetFlavorFromId(id);
+			_db.Flavors.Remove(thisFlavor);
+			_db.SaveChanges();
+			return RedirectToAction("Index");
+		}
 	}
 }
