@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using XXX_ProjectName.Models;
+using SavoryTreats.Models;
 
-namespace XXX_ProjectName
+namespace SavoryTreats
 {
 	public class Startup
 	{
@@ -25,7 +25,7 @@ namespace XXX_ProjectName
 			services.AddMvc();
 
 			services.AddEntityFrameworkMySql()
-	  			.AddDbContext<XXX_ProjectNameContext>(options => options
+	  			.AddDbContext<SavoryTreatsContext>(options => options
 	 			 .UseMySql(Configuration["ConnectionStrings:DefaultConnection"]));
 		}
 
