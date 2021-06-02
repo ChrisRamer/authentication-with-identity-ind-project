@@ -14,20 +14,20 @@
 }
 else
 {
-		<h4><u>Flavors</u></h4>
-		<ul>
-		@foreach (var join in Model.Flavors)
+	<h4><u>Flavors</u></h4>
+	<ul>
+	@foreach (var join in Model.Flavors)
+	{
+		<li class="inline">
+		@using (Html.BeginForm("DeleteFlavor", "Treats"))
 		{
-			<li class="inline">
-			@using (Html.BeginForm("DeleteFlavor", "Treats"))
-			{
-				@Html.ActionLink($"{join.Flavor.Name}", "Details", "Flavors", new { id = join.Flavor.FlavorId })
-				@Html.Hidden("joinId", @join.FlavorTreatId)
-				<input id="delete" type="submit" value="Delete" />
-			}
-			</li>
+			@Html.ActionLink($"{join.Flavor.Name}", "Details", "Flavors", new { id = join.Flavor.FlavorId })
+			@Html.Hidden("joinId", @join.FlavorTreatId)
+			<input id="delete" type="submit" value="Delete" />
 		}
-		</ul>
+		</li>
+	}
+	</ul>
 }
 
 <hr />
