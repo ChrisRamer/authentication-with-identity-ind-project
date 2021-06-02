@@ -39,5 +39,11 @@ namespace Factory.Controllers
 			_db.SaveChanges();
 			return RedirectToAction("Index");
 		}
+
+		public ActionResult Details(int id)
+		{
+			Treat thisTreat = GetTreatFromId(id);
+			return View(thisTreat);
+		}
 	}
 }

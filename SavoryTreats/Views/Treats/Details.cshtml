@@ -1,0 +1,45 @@
+@{
+	Layout = "_Layout";
+}
+
+@model SavoryTreats.Models.Treat
+
+<h2 id="title">Treat: <b>@Html.DisplayFor(model => model.Name)</b></h2>
+
+<hr />
+
+@if (Model.Flavors.Count == 0)
+{
+		<p>This treat doesn't have any flavors assigned.</p>
+}
+else
+{
+		<h4><u>Flavors</u></h4>
+		<ul>
+		@foreach (var join in Model.Flavors)
+		{
+			<li class="inline">
+			@using (Html.BeginForm("DeleteFlavor", "Treats"))
+			{
+				@Html.ActionLink($"{join.Flavor.Name}", "Details", "Flavors", new { id = join.Flavor.FlavorId })
+				@Html.Hidden("joinId", @join.FlavorTreatId)
+				<input id="delete" type="submit" value="Delete" />
+			}
+			</li>
+		}
+		</ul>
+}
+
+<hr />
+
+<p>
+	@Html.ActionLink("Add flavor", "AddFlavor", new { id = Model.TreatId })
+	|
+	@Html.ActionLink("Edit", "Edit", new { id = Model.TreatId })
+	|
+	@Html.ActionLink("Delete", "Delete", new { id = Model.TreatId })
+	<br>
+	@Html.ActionLink("View all treats", "index")
+	|
+	@Html.ActionLink("Go to homepage", "Index", "Home")
+</p>
