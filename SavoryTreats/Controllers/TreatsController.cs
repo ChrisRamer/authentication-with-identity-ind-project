@@ -103,5 +103,14 @@ namespace Factory.Controllers
 			_db.SaveChanges();
 			return RedirectToAction("Details", new { id = treat.TreatId });
 		}
+
+		[HttpPost]
+		public ActionResult DeleteFlavor(int joinId)
+		{
+			FlavorTreat joinEntry = _db.FlavorTreats.FirstOrDefault(entry => entry.FlavorTreatId == joinId);
+			_db.FlavorTreats.Remove(joinEntry);
+			_db.SaveChanges();
+			return RedirectToAction("Details", new { id = joinEntry.TreatId });
+		}
 	}
 }
