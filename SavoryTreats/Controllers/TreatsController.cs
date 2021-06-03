@@ -67,5 +67,20 @@ namespace Factory.Controllers
 			_db.SaveChanges();
 			return RedirectToAction("Details", new { id = treat.TreatId });
 		}
+
+		public ActionResult Delete(int id)
+		{
+			Treat thisTreat = GetTreatFromId(id);
+			return View(thisTreat);
+		}
+
+		[HttpPost, ActionName("Delete")]
+		public ActionResult DeleteConfirmed(int id)
+		{
+			Treat thisTreat = GetTreatFromId(id);
+			_db.Treats.Remove(thisTreat);
+			_db.SaveChanges();
+			return RedirectToAction("Index");
+		}
 	}
 }
