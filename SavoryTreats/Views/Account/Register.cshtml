@@ -1,0 +1,38 @@
+@{
+	Layout = "_Layout";
+}
+
+@using SavoryTreats.ViewModels
+
+@model RegisterViewModel
+
+<h2 id="title">Register a new user</h2>
+
+<hr />
+
+@using (Html.BeginForm("Register", "Account"))
+{
+	@Html.LabelFor(model => model.Email)
+	<br>
+	@Html.TextBoxFor(model=> model.Email)
+	<br>
+	@Html.LabelFor(model => model.Password)
+	<br>
+	@Html.PasswordFor(model=> model.Password)
+	<br>
+	@Html.LabelFor(model => model.ConfirmPassword)
+	<br>
+	@Html.PasswordFor(model => model.ConfirmPassword)
+	<br><br>
+	<input type="submit" value="Register" />
+}
+
+<hr />
+
+<p>
+	@Html.ActionLink("Login page", "Index")
+	|
+	@Html.ActionLink("Sign in", "Login")
+	<br>
+	@Html.ActionLink("Home", "Index", "Home")
+</p>
