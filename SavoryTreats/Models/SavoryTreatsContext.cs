@@ -1,8 +1,9 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace SavoryTreats.Models
 {
-	public class SavoryTreatsContext : DbContext
+	public class SavoryTreatsContext : IdentityDbContext<ApplicationUser>
 	{
 		public virtual DbSet<Flavor> Flavors { get; set; }
 		public virtual DbSet<Treat> Treats { get; set; }
