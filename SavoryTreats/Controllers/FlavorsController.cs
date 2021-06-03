@@ -1,18 +1,25 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using SavoryTreats.Models;
 
 namespace SavoryTreats.Controllers
 {
+	[Authorize]
 	public class FlavorsController : Controller
 	{
 		private readonly SavoryTreatsContext _db;
+		private readonly UserManager<ApplicationUser> _userManager;
 
-		public FlavorsController(SavoryTreatsContext db)
+		public FlavorsController(UserManager<ApplicationUser> userManager, SavoryTreatsContext db)
 		{
+			_userManager = userManager;
 			_db = db;
 		}
 
@@ -21,10 +28,17 @@ namespace SavoryTreats.Controllers
 			return _db.Flavors.FirstOrDefault(Flavor => Flavor.FlavorId == id);
 		}
 
-		public ActionResult Index()
+		private async Task<ApplicationUser> GetCurrentUser()
 		{
-			List<Flavor> model = _db.Flavors.ToList();
-			return View(model);
+			string userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			return await _userManager.FindByIdAsync(userId);
+		}
+
+		public async Task<ActionResult> Index()
+		{
+			ApplicationUser currentUser = await GetCurrentUser();
+			List<Flavor> userFlavors = _db.Flavors.Where(entry => entry.User.Id == currentUser.Id).ToList();
+			return View(userFlavors);
 		}
 
 		public ActionResult Create()
@@ -33,8 +47,9 @@ namespace SavoryTreats.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult Create(Flavor flavor)
+		public async Task<ActionResult> Create(Flavor flavor)
 		{
+			flavor.User = await GetCurrentUser();
 			_db.Flavors.Add(flavor);
 			_db.SaveChanges();
 			return RedirectToAction("Index");

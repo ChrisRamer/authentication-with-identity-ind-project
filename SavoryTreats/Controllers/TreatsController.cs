@@ -1,18 +1,25 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using SavoryTreats.Models;
 
 namespace Factory.Controllers
 {
+	[Authorize]
 	public class TreatsController : Controller
 	{
 		private readonly SavoryTreatsContext _db;
+		private readonly UserManager<ApplicationUser> _userManager;
 
-		public TreatsController(SavoryTreatsContext db)
+		public TreatsController(UserManager<ApplicationUser> userManager, SavoryTreatsContext db)
 		{
+			_userManager = userManager;
 			_db = db;
 		}
 
@@ -21,10 +28,17 @@ namespace Factory.Controllers
 			return _db.Treats.FirstOrDefault(treat => treat.TreatId == id);
 		}
 
-		public ActionResult Index()
+		private async Task<ApplicationUser> GetCurrentUser()
 		{
-			List<Treat> model = _db.Treats.ToList();
-			return View(model);
+			string userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			return await _userManager.FindByIdAsync(userId);
+		}
+
+		public async Task<ActionResult> Index()
+		{
+			ApplicationUser currentUser = await GetCurrentUser();
+			List<Treat> userTreats = _db.Treats.Where(entry => entry.User.Id == currentUser.Id).ToList();
+			return View(userTreats);
 		}
 
 		public ActionResult Create()
@@ -33,8 +47,9 @@ namespace Factory.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult Create(Treat treat)
+		public async Task<ActionResult> Create(Treat treat)
 		{
+			treat.User = await GetCurrentUser();
 			_db.Treats.Add(treat);
 			_db.SaveChanges();
 			return RedirectToAction("Index");
