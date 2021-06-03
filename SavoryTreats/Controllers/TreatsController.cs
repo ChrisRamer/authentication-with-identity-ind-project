@@ -82,5 +82,26 @@ namespace Factory.Controllers
 			_db.SaveChanges();
 			return RedirectToAction("Index");
 		}
+
+		public ActionResult AddFlavor(int id)
+		{
+			Treat thisTreat = GetTreatFromId(id);
+			ViewBag.FlavorId = new SelectList(_db.Flavors, "FlavorId", "Name");
+			return View(thisTreat);
+		}
+
+		[HttpPost]
+		public ActionResult AddFlavor(Treat treat, int flavorId)
+		{
+			bool duplicate = _db.FlavorTreats.Any(join => join.FlavorId == flavorId && join.TreatId == treat.TreatId);
+
+			if (flavorId != 0 && !duplicate)
+			{
+				_db.FlavorTreats.Add(new FlavorTreat() { FlavorId = flavorId, TreatId = treat.TreatId });
+			}
+
+			_db.SaveChanges();
+			return RedirectToAction("Details", new { id = treat.TreatId });
+		}
 	}
 }
