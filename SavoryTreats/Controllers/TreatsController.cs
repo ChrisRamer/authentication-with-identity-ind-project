@@ -45,5 +45,27 @@ namespace Factory.Controllers
 			Treat thisTreat = GetTreatFromId(id);
 			return View(thisTreat);
 		}
+
+		public ActionResult Edit(int id)
+		{
+			Treat thisTreat = GetTreatFromId(id);
+			ViewBag.FlavorId = new SelectList(_db.Flavors, "FlavorId", "Name");
+			return View(thisTreat);
+		}
+
+		[HttpPost]
+		public ActionResult Edit(Treat treat, int flavorId)
+		{
+			bool duplicate = _db.FlavorTreats.Any(join => join.FlavorId == flavorId && join.TreatId == treat.TreatId);
+
+			if (flavorId != 0 && !duplicate)
+			{
+				_db.FlavorTreats.Add(new FlavorTreat() { FlavorId = flavorId, TreatId = treat.TreatId });
+			}
+
+			_db.Entry(treat).State = EntityState.Modified;
+			_db.SaveChanges();
+			return RedirectToAction("Details", new { id = treat.TreatId });
+		}
 	}
 }
