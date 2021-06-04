@@ -34,11 +34,11 @@ namespace SavoryTreats.Controllers
 			return await _userManager.FindByIdAsync(userId);
 		}
 
-		public async Task<ActionResult> Index()
+		[AllowAnonymous]
+		public ActionResult Index()
 		{
-			ApplicationUser currentUser = await GetCurrentUser();
-			List<Flavor> userFlavors = _db.Flavors.Where(entry => entry.User.Id == currentUser.Id).ToList();
-			return View(userFlavors);
+			List<Flavor> flavors = _db.Flavors.ToList();
+			return View(flavors);
 		}
 
 		public ActionResult Create()
@@ -47,14 +47,14 @@ namespace SavoryTreats.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> Create(Flavor flavor)
+		public ActionResult Create(Flavor flavor)
 		{
-			flavor.User = await GetCurrentUser();
 			_db.Flavors.Add(flavor);
 			_db.SaveChanges();
 			return RedirectToAction("Index");
 		}
 
+		[AllowAnonymous]
 		public ActionResult Details(int id)
 		{
 			Flavor thisFlavor = _db.Flavors

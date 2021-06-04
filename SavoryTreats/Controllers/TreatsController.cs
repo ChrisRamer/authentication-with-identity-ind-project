@@ -34,11 +34,11 @@ namespace Factory.Controllers
 			return await _userManager.FindByIdAsync(userId);
 		}
 
-		public async Task<ActionResult> Index()
+		[AllowAnonymous]
+		public ActionResult Index()
 		{
-			ApplicationUser currentUser = await GetCurrentUser();
-			List<Treat> userTreats = _db.Treats.Where(entry => entry.User.Id == currentUser.Id).ToList();
-			return View(userTreats);
+			List<Treat> treats = _db.Treats.ToList();
+			return View(treats);
 		}
 
 		public ActionResult Create()
@@ -47,14 +47,20 @@ namespace Factory.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> Create(Treat treat)
+		public ActionResult Create(Treat treat, int flavorId)
 		{
-			treat.User = await GetCurrentUser();
 			_db.Treats.Add(treat);
+
+			if (flavorId != 0)
+			{
+				_db.FlavorTreats.Add(new FlavorTreat() { FlavorId = flavorId, TreatId = treat.TreatId });
+			}
+
 			_db.SaveChanges();
 			return RedirectToAction("Index");
 		}
 
+		[AllowAnonymous]
 		public ActionResult Details(int id)
 		{
 			Treat thisTreat = GetTreatFromId(id);
