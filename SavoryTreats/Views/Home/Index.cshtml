@@ -2,6 +2,8 @@
 	Layout = "_Layout";
 }
 
+@using SavoryTreats.Models
+
 <h1 id="title">Pierre's Sweet and Savory Treats</h1>
 
 <hr />
@@ -10,6 +12,47 @@
 	@Html.ActionLink("View all flavors", "Index", "Flavors")
 	|
 	@Html.ActionLink("View all treats", "Index", "Treats")
-	<br>
-	@Html.ActionLink("Register or login", "Index", "Account")
+
+	@if (User.Identity.IsAuthenticated)
+	{
+		<hr />
+		<p>Logged in as Administrator: <b>@User.Identity.Name</b></p>
+		@using (Html.BeginForm("LogOff", "Account"))
+		{
+			<input type="submit" class="btn btn-default" value="Log out" />
+		}
+	}
+	else
+	{
+		<br>
+		@Html.ActionLink("Register or login", "Index", "Account")
+	}
 </p>
+
+<hr />
+
+@if (ViewBag.Flavors.Count == 0)
+{
+	<p>No flavors have been added yet.</p>
+}
+else
+{
+	<u>Flavors</u>
+	@foreach (Flavor flavor in ViewBag.Flavors)
+	{
+		<lI>@Html.ActionLink($"{flavor.Name}", "Details", "Flavors", new { id = flavor.FlavorId })</lI>
+	}
+}
+<br>
+@if (ViewBag.Treats.Count == 0)
+{
+	<p>No treats have been added yet.</p>
+}
+else
+{
+	<u>Treats</u>
+	@foreach (Treat treat in ViewBag.Treats)
+	{
+		<li>@Html.ActionLink($"{treat.Name}", "Details", "Treats", new { id = treat.TreatId })</li>
+	}
+}
